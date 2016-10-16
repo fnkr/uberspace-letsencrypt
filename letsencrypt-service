@@ -1,0 +1,14 @@
+#!/bin/bash
+PATH=$(dirname "${BASH_SOURCE[0]}"):/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
+
+ok=true
+while :; do
+    letsencrypt-setup example.com www.example.com || ok=false
+    letsencrypt-setup example.net www.example.net || ok=false
+    letsencrypt-setup example.org www.example.org || ok=false
+
+    if [ "$ok" != true ]; then
+        exit 1
+    fi
+    sleep 86400
+done

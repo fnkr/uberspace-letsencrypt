@@ -1,0 +1,49 @@
+#!/bin/bash
+PATH=/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
+
+sd=$(dirname "${BASH_SOURCE[0]}")
+sn=letsencrypt-setup
+
+if [ "$1" = "--dry-run" ]; then
+    dry_run=echo
+    shift
+fi
+
+if [ -z "$1" ]; then
+    echo "usage: $sn [--dry-run] DOMAIN [DOMAIN...]"
+    exit 1
+fi
+
+make_domain_str() {
+    for domain in $@; do
+        echo -d "$domain"
+    done
+}
+
+hash openssl 2>/dev/null || { echo >&2 "$sn: fatal: openssl not found."; exit 1; }
+hash letsencrypt 2>/dev/null || { echo >&2 "$sn: fatal: letsencrypt not found."; exit 1; }
+
+get_certificate() {
+    if [ -d "$sd/.letsencrypt-config/live/$1" ]; then
+        openssl x509 -checkend $(( 21 * 86400 )) -in "$sd/.letsencrypt-config/live/$1/cert.pem" > /dev/null
+        if [ $? = 0 ]; then
+            echo "$sn: warn: certificate for $1 is still valid for >=21 days. not requesting certificate renewal."
+            exit 0
+        fi
+
+        echo "$sn: info: requesting certificate renewal for $1."
+    else
+        echo "$sn: info: requesting new certificate for $1."
+    fi
+
+    $dry_run letsencrypt certonly \
+        --config "$sd/letsencrypt.ini" --config-dir "$sd/.letsencrypt-config" --work-dir "$sd/.letsencrypt-cache" --logs-dir "$sd/.letsencrypt-logs" --webroot-path "/var/www/virtual/$USER/html" \
+        $(make_domain_str "$@") \
+        || exit 1
+
+    $dry_run uberspace-add-certificate \
+        -k "$sd/.letsencrypt-config/live/$1/privkey.pem" -c "$sd/.letsencrypt-config/live/$1/cert.pem" \
+        || exit 1
+}
+
+get_certificate "$@"
