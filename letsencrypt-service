@@ -1,5 +1,5 @@
 #!/bin/bash
-PATH=$(dirname "${BASH_SOURCE[0]}"):/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
+export PATH=$(dirname "${BASH_SOURCE[0]}"):/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
 
 ok=true
 while :; do

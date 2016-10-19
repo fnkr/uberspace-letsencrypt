@@ -1,5 +1,5 @@
 #!/bin/bash
-PATH=/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
+export PATH=/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
 
 sd=$(dirname "${BASH_SOURCE[0]}")
 sn=letsencrypt-setup
