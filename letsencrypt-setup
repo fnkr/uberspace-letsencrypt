@@ -15,7 +15,7 @@ if [ -z "$1" ]; then
 fi
 
 make_domain_str() {
-    for domain in $@; do
+    for domain in "$@"; do
         echo -d "$domain"
     done
 }
