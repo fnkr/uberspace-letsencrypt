@@ -1,14 +1,16 @@
 #!/bin/bash
 export PATH=$(dirname "${BASH_SOURCE[0]}"):/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
 
-ok=true
 while :; do
-    letsencrypt-setup example.com www.example.com || ok=false
-    letsencrypt-setup example.net www.example.net || ok=false
-    letsencrypt-setup example.org www.example.org || ok=false
+    ok=1
 
-    if [ "$ok" != true ]; then
-        exit 1
+    letsencrypt-setup example.com www.example.com || ok=0
+    letsencrypt-setup example.net www.example.net || ok=0
+    letsencrypt-setup example.org www.example.org || ok=0
+
+    if [ "$ok" != 1 ]; then
+        account="$(whoami)@$(hostname)"
+        mail -s "Let's Encrypt just failed on $account" "$account" <<< "Let's Encrypt just failed to generate one or more certificates on $account."
     fi
     sleep 86400
 done
