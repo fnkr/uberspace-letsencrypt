@@ -16,7 +16,7 @@ git clone https://github.com/fnkr/uberspace-letsencrypt.git ~/bin/letsencrypt
 
 **2)** Update `letsencrypt.ini` with your email address
 
-**3)** Update `letsencrypt-service` with your domains
+**3)** Update `letsencrypt-domains` with your domains
 
 **4)** Setup service
 ```

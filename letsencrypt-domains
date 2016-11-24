@@ -1,0 +1,9 @@
+# - One line per certificate.
+# - One certificate can cover up to 100 (sub)domains.
+# - Add multiple (sub)domains to a certificate by using space as separator.
+# - Empty lines will be ignored.
+# - Lines starting with '#' will be ignored.
+
+example.com www.example.com
+example.net www.example.net
+example.org www.example.org

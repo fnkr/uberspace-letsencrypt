@@ -1,12 +1,14 @@
 #!/bin/bash
 export PATH=$(dirname "${BASH_SOURCE[0]}"):/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
 
+letsencrypt_domains_file=$(dirname "${BASH_SOURCE[0]}")/letsencrypt-domains
+
 while :; do
     ok=1
 
-    letsencrypt-setup example.com www.example.com || ok=0
-    letsencrypt-setup example.net www.example.net || ok=0
-    letsencrypt-setup example.org www.example.org || ok=0
+    while read domains; do
+        letsencrypt-setup $domains || ok=0
+    done < <(cat "$letsencrypt_domains_file" | sed '/^$/d;/^#/d')
 
     if [ "$ok" != 1 ]; then
         account="$(whoami)@$(hostname)"
